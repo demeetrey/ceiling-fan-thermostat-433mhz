@@ -2,7 +2,7 @@
   #include <RCSwitch.h>
   #include <DallasTemperature.h>
 
-  #define FIRMWARE_VERSION "1.0.0"
+  #define FIRMWARE_VERSION "1.1.0"
 
   // Time conversion helpers
   #define S(x) ((x) * 1000UL)    // seconds to milliseconds
@@ -167,6 +167,27 @@
     // Read the measured temperature from a specific sensor on the bus
     float temp1 = sensor1.getTempCByIndex(0);
     float temp2 = sensor2.getTempCByIndex(0);
+
+    // Deadlock detector
+    // if the fan is expected to be running but the temperature is still too high,
+    // reset the fan state with OFF -> ON to keep the RF code sequence in sync.
+    if (is_fan_started && (temp1 > MAX_TEMPERATURE || temp2 > MAX_TEMPERATURE)) {
+      // Alarm system
+      for (int i = 3; i > 0; i--) {
+        digitalWrite(led_G, LOW);
+        digitalWrite(led_R, HIGH);
+        delay(200);
+        digitalWrite(led_G, HIGH);
+        digitalWrite(led_R, LOW);
+        delay(200);
+      }
+
+      fanOff();
+      delay(S(3));
+      fanOn();
+      delay(M(5));
+      return;
+    }
 
     if (is_fan_started) {
       if (temp1 < MIN_TEMPERATURE || temp2 < MIN_TEMPERATURE) {
