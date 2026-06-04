@@ -2,7 +2,7 @@
   #include <RCSwitch.h>
   #include <DallasTemperature.h>
 
-  #define FIRMWARE_VERSION "1.1.0"
+  #define FIRMWARE_VERSION "1.1.1"
 
   // Time conversion helpers
   #define S(x) ((x) * 1000UL)    // seconds to milliseconds
@@ -110,9 +110,9 @@
     fanOn();
     delay(S(3));
     toggleFanDirection();
-    delay(S(3));
+    delay(S(2));
     fanOff();
-    delay(S(3));
+    delay(S(10));
   }
 
   // Startup indication
@@ -162,7 +162,7 @@
     sensor1.requestTemperatures();
     sensor2.requestTemperatures();
     
-    delay(1500); // Wait for DS18B20 temperature conversion to complete
+    delay(1000); // Wait for DS18B20 temperature conversion to complete
     
     // Read the measured temperature from a specific sensor on the bus
     float temp1 = sensor1.getTempCByIndex(0);
