@@ -131,6 +131,7 @@ The value can be in the range from `0` to `255`.
 - After startup, a short calibration sequence is performed: fan on, direction switch, and fan off.
 - Before permanent use, test the system manually and make sure the commands do not conflict with other 433 MHz devices.
 - The `Button-codes.xlsx` file contains the saved RF codes for the remote-control buttons.
+- `Deadlock` recovery for missed RF commands: if the fan is expected to be running but the temperature stays above the upper threshold, the controller sends OFF → ON to restore a known fan state.
 
 ## License
 
